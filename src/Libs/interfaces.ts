@@ -9,3 +9,9 @@ export interface IProducto {
   precio: number;
   oferta: number;
 }
+
+export interface IErrorLogin {
+  email: boolean;
+  pass: boolean;
+  info: string;
+}
