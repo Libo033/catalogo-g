@@ -1,5 +1,6 @@
 export interface IProducto {
   _id: string;
+  categoria: string;
   marca: string;
   detalle: string;
   imagen: string;
