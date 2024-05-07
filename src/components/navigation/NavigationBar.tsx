@@ -9,7 +9,7 @@ const NavigationBar = () => {
   return (
     <>
       {pathname !== "/admin" && (
-        <nav className="pink-grad m-auto max-w-screen-2xl w-full h-20">
+        <nav className="pink-grad fixed m-auto max-w-screen-2xl w-full h-20 z-50">
           <ul className="h-full flex justify-center items-center">
             <li className="text-2xl font-medium">Catalogo Griselda</li>
             {false && (
