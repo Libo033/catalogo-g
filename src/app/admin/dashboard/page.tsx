@@ -21,7 +21,7 @@ const productos: IProducto = {
 
 const Dashboard = () => {
   return (
-    <div className="pt-20 m-auto max-w-screen-2xl">
+    <div className="pt-20 w-full mx-auto max-w-screen-2xl">
       <div className="px-4 pt-4">
         <Link
           className="text-[#007acc] text-lg underline"
