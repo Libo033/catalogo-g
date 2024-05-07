@@ -1,12 +1,27 @@
+"use client";
 import AdminCard from "@/components/card/AdminCard";
-import { Breadcrumbs, InputAdornment, TextField } from "@mui/material";
+import { IProducto } from "@/Libs/interfaces";
+import { InputAdornment, TextField } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+const productos: IProducto = {
+  _id: "1",
+  categoria: "productos",
+  marca: "Natura",
+  detalle: "Bolsa de regalos",
+  imagen:
+    "https://res.cloudinary.com/dsuydyqgz/image/upload/v1706882995/01-varios/rd8ntaaaq4ovveaksu9t.jpg",
+  talle: false,
+  stock: true,
+  precio: 3800,
+  oferta: 3500,
+};
+
 const Dashboard = () => {
   return (
-    <div className="m-auto max-w-screen-2xl">
+    <div className="pt-20 m-auto max-w-screen-2xl">
       <div className="px-4 pt-4">
         <Link
           className="text-[#007acc] text-lg underline"
@@ -37,7 +52,7 @@ const Dashboard = () => {
         />
       </div>
       <section className="p-4">
-        <AdminCard />
+        <AdminCard {...productos} />
       </section>
     </div>
   );
