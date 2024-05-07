@@ -1,3 +1,4 @@
+import AdminCard from "@/components/card/AdminCard";
 import { Breadcrumbs, InputAdornment, TextField } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
@@ -35,7 +36,9 @@ const Dashboard = () => {
           sx={{ backgroundColor: "#fff" }}
         />
       </div>
-      <section className="p-4"></section>
+      <section className="p-4">
+        <AdminCard />
+      </section>
     </div>
   );
 };
