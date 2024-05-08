@@ -12,13 +12,17 @@ import Image from "next/image";
 import { IProducto } from "@/Libs/interfaces";
 import { handleAdd } from "@/Libs/cloudinary/HandleAdd";
 import { handleDelete } from "@/Libs/cloudinary/HandleDelete";
+import { handleFileReader } from "@/Libs/cloudinary/HandleFileReader";
+import { useRouter } from "next/navigation";
 
 let buttonClass =
   "MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPink MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPink MuiButton-root MuiButton-contained MuiButton-containedPink MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPink css-ggvnso-MuiButtonBase-root-MuiButton-root";
 
 const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false); // Para boton de agregar imagen
   const [uploadData, setUploadData] = useState<
+    // Response del cloudinary
     UploadApiResponse | Error | undefined
   >();
   const [product, setProduct] = useState<Partial<IProducto>>({
@@ -35,7 +39,15 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
   const handleNuevoProducto = async (event: FormEvent) => {
     event.preventDefault();
 
-    console.log(product);
+    const productoCreado = await fetch("/api/v1/producto", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(product),
+    });
+
+    if (productoCreado.ok) {
+      router.push("/admin/dashboard");
+    }
   };
 
   const handleAddImage = () => {
@@ -55,6 +67,8 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
   };
 
   useEffect(() => {
+    // Cuando se agrega una imagen se guarda en el hook product y se mantiene en uploadData
+    // Manejar errores con SweetAlert2
     if (uploadData instanceof Error) {
       console.log(uploadData);
     } else if (uploadData) {
@@ -136,7 +150,12 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
                 height={24}
               />
             </label>
-            <input className="hidden" id="image-uploader" type="file" />
+            <input
+              className="hidden"
+              onChange={(e) => handleFileReader(e, setUploadData, setProduct)}
+              id="image-uploader"
+              type="file"
+            />
             <PinkButton
               props={{
                 variant: "contained",
