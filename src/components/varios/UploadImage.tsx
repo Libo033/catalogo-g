@@ -8,6 +8,7 @@ import { UploadApiResponse } from "cloudinary";
 import { handleFileReader } from "@/Libs/cloudinary/HandleFileReader";
 import { handleAdd } from "@/Libs/cloudinary/HandleAdd";
 import { handleDelete } from "@/Libs/cloudinary/HandleDelete";
+import Swal from "sweetalert2";
 
 let buttonClass =
   "MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPink MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPink MuiButton-root MuiButton-contained MuiButton-containedPink MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPink css-ggvnso-MuiButtonBase-root-MuiButton-root";
@@ -49,7 +50,11 @@ const UploadImage = ({
     // Cuando se agrega una imagen se guarda en el hook product y se mantiene en uploadData
     // Manejar errores con SweetAlert2
     if (uploadData instanceof Error) {
-      console.log(uploadData);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Algo salió mal!",
+      });
     } else if (uploadData) {
       setProduct((prod) => ({ ...prod, imagen: uploadData.secure_url }));
     }
