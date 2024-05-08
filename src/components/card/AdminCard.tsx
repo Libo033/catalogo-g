@@ -18,7 +18,7 @@ const AdminCard = (producto: Readonly<IProducto>) => {
   const r = useRouter();
 
   const handleEditProduct = (id: string) => {
-    r.push(`/admin/dashboard/${id}`);
+    r.push(`/admin/dashboard/product/${id}`);
   };
 
   const handleDeleteProduct = (id: string) => {
