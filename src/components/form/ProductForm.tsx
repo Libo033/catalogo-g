@@ -1,6 +1,11 @@
 "use client";
 import { UploadApiResponse } from "cloudinary";
-import { FormControlLabel, Switch, TextField } from "@mui/material";
+import {
+  CircularProgress,
+  FormControlLabel,
+  Switch,
+  TextField,
+} from "@mui/material";
 import React, { FormEvent, useEffect, useState } from "react";
 import PinkButton from "../varios/PinkButton";
 import Image from "next/image";
@@ -12,6 +17,7 @@ let buttonClass =
   "MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPink MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPink MuiButton-root MuiButton-contained MuiButton-containedPink MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPink css-ggvnso-MuiButtonBase-root-MuiButton-root";
 
 const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
+  const [loading, setLoading] = useState(false);
   const [uploadData, setUploadData] = useState<
     UploadApiResponse | Error | undefined
   >();
@@ -33,22 +39,18 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
   };
 
   const handleAddImage = () => {
+    setLoading(true);
     if (product.imagen) handleAdd(product.imagen, setUploadData);
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
   };
 
   const handleDeleteImage = async () => {
     if (uploadData && !(uploadData instanceof Error)) {
-      // RETORNA SIEMPRE FALSE
-      const borrado: boolean = await handleDelete(
-        uploadData.secure_url,
-        "07-catalogo-gri/"
-      );
-
-      if (borrado) {
-        // BUSCAR ERROR
-        setUploadData(undefined);
-        setProduct((prod) => ({ ...prod, imagen: "" }));
-      }
+      handleDelete(uploadData.secure_url, "07-catalogo-gri/");
+      setProduct((prod) => ({ ...prod, imagen: "" }));
+      setUploadData(undefined);
     }
   };
 
@@ -123,6 +125,8 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setProduct((prod) => ({ ...prod, imagen: e.target.value }))
               }
+              autoComplete="off"
+              disabled={Boolean(uploadData && !(uploadData instanceof Error))}
             />
             <label className={buttonClass} htmlFor="image-uploader">
               <Image
@@ -140,7 +144,11 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
                 onClick: (e) => handleAddImage(),
               }}
             >
-              +
+              {loading ? (
+                <CircularProgress size={"18px"} sx={{ color: "white" }} />
+              ) : (
+                "+"
+              )}
             </PinkButton>
           </div>
           {uploadData && !(uploadData instanceof Error) && (
