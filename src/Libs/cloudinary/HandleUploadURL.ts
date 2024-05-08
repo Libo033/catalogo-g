@@ -1,5 +1,9 @@
 import { UploadApiResponse } from "cloudinary";
-import cloudinary from "../database/cloudinarydb";
+
+interface ApiResponse {
+  code: number;
+  imagen: UploadApiResponse;
+}
 
 export const handleUploadURL = (
   url: string,
@@ -7,14 +11,18 @@ export const handleUploadURL = (
     React.SetStateAction<UploadApiResponse | Error | undefined>
   >
 ) => {
-  cloudinary.uploader
-    .upload(url, { upload_preset: "" })
-    .then((data: UploadApiResponse) => {
-      setUploadData(data);
+  fetch("/api/v1/image/upload", {
+    method: "POST",
+    body: JSON.stringify({ url }),
+    headers: { "Content-Type": "application/json" },
+  })
+    .then((res: Response) => res.json())
+    .then((data: ApiResponse) => {
+      setUploadData(data.imagen);
     })
-    .catch((error) => {
-      if (error instanceof Error) {
-        setUploadData(error);
+    .catch((err) => {
+      if (err instanceof Error) {
+        setUploadData(err);
       }
     });
 };

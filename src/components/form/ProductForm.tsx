@@ -1,14 +1,19 @@
 "use client";
+import { UploadApiResponse } from "cloudinary";
 import { FormControlLabel, Switch, TextField } from "@mui/material";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import PinkButton from "../varios/PinkButton";
 import Image from "next/image";
 import { IProducto } from "@/Libs/interfaces";
+import { handleAdd } from "@/Libs/cloudinary/HandleAdd";
 
 let buttonClass =
   "MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPink MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPink MuiButton-root MuiButton-contained MuiButton-containedPink MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPink css-ggvnso-MuiButtonBase-root-MuiButton-root";
 
 const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
+  const [uploadData, setUploadData] = useState<
+    UploadApiResponse | Error | undefined
+  >();
   const [product, setProduct] = useState<Partial<IProducto>>({
     categoria: "",
     marca: "",
@@ -25,6 +30,18 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
 
     console.log(product);
   };
+
+  const handleAddImage = () => {
+    if (product.imagen) handleAdd(product.imagen, setUploadData);
+  };
+
+  useEffect(() => {
+    if (uploadData instanceof Error) {
+      console.log(uploadData);
+    } else if (uploadData) {
+      setProduct((prod) => ({ ...prod, imagen: uploadData.secure_url }));
+    }
+  }, [uploadData]);
 
   return (
     <form
@@ -81,7 +98,15 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex gap-2 items-center">
-            <TextField fullWidth variant="outlined" label="IMAGEN" />
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="IMAGEN"
+              value={product.imagen}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setProduct((prod) => ({ ...prod, imagen: e.target.value }))
+              }
+            />
             <label className={buttonClass} htmlFor="image-uploader">
               <Image
                 src={"/img/folder.svg"}
@@ -92,18 +117,20 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
             </label>
             <input className="hidden" id="image-uploader" type="file" />
             <PinkButton
-              props={{ variant: "contained", sx: { height: "56px" } }}
+              props={{
+                variant: "contained",
+                sx: { height: "56px" },
+                onClick: (e) => handleAddImage(),
+              }}
             >
               +
             </PinkButton>
           </div>
-          {false && (
+          {uploadData && !(uploadData instanceof Error) && (
             <div className="max-h-[382px]">
               <Image
                 className="border-2 rounded-xl"
-                src={
-                  "https://res.cloudinary.com/dsuydyqgz/image/upload/v1706882995/01-varios/rd8ntaaaq4ovveaksu9t.jpg"
-                }
+                src={uploadData.secure_url}
                 alt=""
                 width={480}
                 height={480}
