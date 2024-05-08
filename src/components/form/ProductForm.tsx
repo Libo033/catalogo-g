@@ -1,26 +1,14 @@
 "use client";
 import { UploadApiResponse } from "cloudinary";
-import {
-  CircularProgress,
-  FormControlLabel,
-  Switch,
-  TextField,
-} from "@mui/material";
-import React, { FormEvent, useEffect, useState } from "react";
+import { FormControlLabel, Switch, TextField } from "@mui/material";
+import React, { FormEvent, useState } from "react";
 import PinkButton from "../varios/PinkButton";
-import Image from "next/image";
 import { IProducto } from "@/Libs/interfaces";
-import { handleAdd } from "@/Libs/cloudinary/HandleAdd";
-import { handleDelete } from "@/Libs/cloudinary/HandleDelete";
-import { handleFileReader } from "@/Libs/cloudinary/HandleFileReader";
 import { useRouter } from "next/navigation";
-
-let buttonClass =
-  "MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPink MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPink MuiButton-root MuiButton-contained MuiButton-containedPink MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPink css-ggvnso-MuiButtonBase-root-MuiButton-root";
+import UploadImage from "../varios/UploadImage";
 
 const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
   const router = useRouter();
-  const [loading, setLoading] = useState(false); // Para boton de agregar imagen
   const [uploadData, setUploadData] = useState<
     // Response del cloudinary
     UploadApiResponse | Error | undefined
@@ -49,32 +37,6 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
       router.push("/admin/dashboard");
     }
   };
-
-  const handleAddImage = () => {
-    setLoading(true);
-    if (product.imagen) handleAdd(product.imagen, setUploadData);
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  };
-
-  const handleDeleteImage = async () => {
-    if (uploadData && !(uploadData instanceof Error)) {
-      handleDelete(uploadData.secure_url, "07-catalogo-gri/");
-      setProduct((prod) => ({ ...prod, imagen: "" }));
-      setUploadData(undefined);
-    }
-  };
-
-  useEffect(() => {
-    // Cuando se agrega una imagen se guarda en el hook product y se mantiene en uploadData
-    // Manejar errores con SweetAlert2
-    if (uploadData instanceof Error) {
-      console.log(uploadData);
-    } else if (uploadData) {
-      setProduct((prod) => ({ ...prod, imagen: uploadData.secure_url }));
-    }
-  }, [uploadData]);
 
   return (
     <form
@@ -129,67 +91,12 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
             }
           />
         </div>
-        <div className="flex flex-col gap-4">
-          <div className="flex gap-2 items-center">
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="IMAGEN"
-              value={product.imagen}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setProduct((prod) => ({ ...prod, imagen: e.target.value }))
-              }
-              autoComplete="off"
-              disabled={Boolean(uploadData && !(uploadData instanceof Error))}
-            />
-            <label className={buttonClass} htmlFor="image-uploader">
-              <Image
-                src={"/img/folder.svg"}
-                alt="folder"
-                width={24}
-                height={24}
-              />
-            </label>
-            <input
-              className="hidden"
-              onChange={(e) => handleFileReader(e, setUploadData, setProduct)}
-              id="image-uploader"
-              type="file"
-            />
-            <PinkButton
-              props={{
-                variant: "contained",
-                sx: { height: "56px" },
-                onClick: (e) => handleAddImage(),
-              }}
-            >
-              {loading ? (
-                <CircularProgress size={"18px"} sx={{ color: "white" }} />
-              ) : (
-                "+"
-              )}
-            </PinkButton>
-          </div>
-          {uploadData && !(uploadData instanceof Error) && (
-            <div className="max-h-[382px] relative">
-              <Image
-                className="border-2 rounded-xl"
-                src={uploadData.secure_url}
-                alt=""
-                width={480}
-                height={480}
-              />
-              <Image
-                onClick={handleDeleteImage}
-                className="absolute top-4 right-4"
-                src={"/img/close.svg"}
-                alt="close"
-                width={24}
-                height={24}
-              />
-            </div>
-          )}
-        </div>
+        <UploadImage
+          product={product}
+          setProduct={setProduct}
+          uploadData={uploadData}
+          setUploadData={setUploadData}
+        />
         <div className="flex gap-6">
           <TextField
             fullWidth
