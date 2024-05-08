@@ -48,24 +48,21 @@ const AdminCard = (producto: Readonly<IProducto>) => {
       <div className="relative flex justify-center border rounded-lg h-72">
         <Image
           className="object-contain"
-          src={
-            "https://res.cloudinary.com/dsuydyqgz/image/upload/v1706882995/01-varios/rd8ntaaaq4ovveaksu9t.jpg"
-          }
+          src={producto.imagen}
           alt={producto.detalle}
           width={480}
           height={480}
         />
-        {producto.precio < producto.oferta && (
-          <p className="absolute bottom-2 right-2 bg-slate-700 px-2 py-px rounded font-medium text-white text-lg bg-opacity-80">
-            $ {Intl.NumberFormat().format(producto.precio)}
-          </p>
-        )}
-        {producto.precio >= producto.oferta && (
+        {producto.precio > producto.oferta && producto.oferta !== 0 ? (
           <p className="absolute bottom-2 right-2 bg-[#ff6bb5] px-2 py-px rounded font-medium text-black text-lg bg-opacity-80">
             OFERTA $ {Intl.NumberFormat().format(producto.oferta)}{" "}
             <s className="text-sm">
               $ {Intl.NumberFormat().format(producto.precio)}
             </s>
+          </p>
+        ) : (
+          <p className="absolute bottom-2 right-2 bg-slate-700 px-2 py-px rounded font-medium text-white text-lg bg-opacity-80">
+            $ {Intl.NumberFormat().format(producto.precio)}
           </p>
         )}
       </div>
