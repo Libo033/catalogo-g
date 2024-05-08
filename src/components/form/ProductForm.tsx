@@ -6,6 +6,7 @@ import PinkButton from "../varios/PinkButton";
 import Image from "next/image";
 import { IProducto } from "@/Libs/interfaces";
 import { handleAdd } from "@/Libs/cloudinary/HandleAdd";
+import { handleDelete } from "@/Libs/cloudinary/HandleDelete";
 
 let buttonClass =
   "MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPink MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPink MuiButton-root MuiButton-contained MuiButton-containedPink MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPink css-ggvnso-MuiButtonBase-root-MuiButton-root";
@@ -33,6 +34,22 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
 
   const handleAddImage = () => {
     if (product.imagen) handleAdd(product.imagen, setUploadData);
+  };
+
+  const handleDeleteImage = async () => {
+    if (uploadData && !(uploadData instanceof Error)) {
+      // RETORNA SIEMPRE FALSE
+      const borrado: boolean = await handleDelete(
+        uploadData.secure_url,
+        "07-catalogo-gri/"
+      );
+
+      if (borrado) {
+        // BUSCAR ERROR
+        setUploadData(undefined);
+        setProduct((prod) => ({ ...prod, imagen: "" }));
+      }
+    }
   };
 
   useEffect(() => {
@@ -127,13 +144,21 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
             </PinkButton>
           </div>
           {uploadData && !(uploadData instanceof Error) && (
-            <div className="max-h-[382px]">
+            <div className="max-h-[382px] relative">
               <Image
                 className="border-2 rounded-xl"
                 src={uploadData.secure_url}
                 alt=""
                 width={480}
                 height={480}
+              />
+              <Image
+                onClick={handleDeleteImage}
+                className="absolute top-4 right-4"
+                src={"/img/close.svg"}
+                alt="close"
+                width={24}
+                height={24}
               />
             </div>
           )}
