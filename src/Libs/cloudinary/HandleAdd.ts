@@ -1,5 +1,6 @@
 import { UploadApiResponse } from "cloudinary";
 import { handleUploadURL } from "./HandleUploadURL";
+import { handleUploadPC } from "./HandleUploadPC";
 
 export const handleAdd = (
   url: string,
@@ -12,6 +13,6 @@ export const handleAdd = (
   if ((fileInput as HTMLInputElement).files?.length === 0) {
     handleUploadURL(url, setUploadData);
   } else {
-    //handleUploadPC("07-catalogo-gri", setUploadData);
+    handleUploadPC("07-catalogo-gri", setUploadData);
   }
 };
