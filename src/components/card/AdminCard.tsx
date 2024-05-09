@@ -35,7 +35,7 @@ const AdminCard = (producto: Readonly<IProducto>) => {
     }).then((result) => {
       if (result.isConfirmed) {
         // Si se quiere borrar, se llama a la API para borrar
-        fetch(`/api/v1/producto/${id}}`, { method: "DELETE" })
+        fetch(`/api/v1/producto/${id}`, { method: "DELETE" })
           .then((res: Response) => res.json)
           .then((data) => {
             console.log(data);
