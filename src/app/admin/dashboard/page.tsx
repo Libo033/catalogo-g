@@ -5,6 +5,7 @@ import { InputAdornment, Skeleton, TextField } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 interface ApiResponse {
   code: number;
@@ -13,6 +14,49 @@ interface ApiResponse {
 
 const Dashboard = () => {
   const [productos, setProductos] = useState<IProducto[]>();
+
+  const handleDeleteProduct = (id: string) => {
+    Swal.fire({
+      // Primera pantalla para verificar si se quiere borrar
+      title: "Estas seguro?",
+      text: "Una vez borrado no se podra recuperar!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#c88fd1",
+      cancelButtonColor: "#f44336",
+      cancelButtonText: "Cancelar",
+      confirmButtonText: "Si, borrar!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Si se quiere borrar, se llama a la API para borrar
+        fetch(`/api/v1/producto/${id}`, { method: "DELETE" })
+          .then((res: Response) => res.json)
+          .then((data) => {
+            setProductos(
+              productos ? productos.filter((p) => p._id !== id) : productos
+            );
+          })
+          .catch((error) => {
+            console.log(error);
+            Swal.fire({
+              // Error en caso de que no se pueda borrar
+              title: "Error",
+              text: "No se pudo elimnar el producto",
+              icon: "error",
+              confirmButtonColor: "#c88fd1",
+            });
+            return;
+          });
+        Swal.fire({
+          // Borrado exitosamente
+          title: "Borrado!",
+          text: "El producto se ha eliminado!",
+          icon: "success",
+          confirmButtonColor: "#c88fd1",
+        });
+      }
+    });
+  };
 
   useEffect(() => {
     fetch("/api/v1/producto", { method: "GET" })
@@ -61,7 +105,11 @@ const Dashboard = () => {
       <section className="p-4 mb-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {productos && productos.length > 0 ? (
           productos.map((producto) => (
-            <AdminCard key={producto._id} {...producto} />
+            <AdminCard
+              producto={producto}
+              handleDeleteProduct={handleDeleteProduct}
+              key={producto._id}
+            />
           ))
         ) : (
           <Skeleton width={"100%"} height={"382px"} />
