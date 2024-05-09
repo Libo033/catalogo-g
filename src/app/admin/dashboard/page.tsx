@@ -113,7 +113,9 @@ const Dashboard = () => {
               />
             ))
           ) : (
-            <p className="h-80 flex justify-center items-center text-lg text-slate-600">No tenes productos cargados.</p>
+            <p className="h-80 flex justify-center items-center text-lg text-slate-600">
+              No tenes productos cargados.
+            </p>
           )
         ) : (
           <>
