@@ -23,6 +23,7 @@ const AdminCard = (producto: Readonly<IProducto>) => {
 
   const handleDeleteProduct = (id: string) => {
     Swal.fire({
+      // Primera pantalla para verificar si se quiere borrar
       title: "Estas seguro?",
       text: "Una vez borrado no se podra recuperar!",
       icon: "warning",
@@ -33,7 +34,25 @@ const AdminCard = (producto: Readonly<IProducto>) => {
       confirmButtonText: "Si, borrar!",
     }).then((result) => {
       if (result.isConfirmed) {
+        // Si se quiere borrar, se llama a la API para borrar
+        fetch(`/api/v1/producto/${id}}`, { method: "DELETE" })
+          .then((res: Response) => res.json)
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((error) => {
+            console.log(error);
+            Swal.fire({
+              // Error en caso de que no se pueda borrar
+              title: "Error",
+              text: "No se pudo elimnar el producto",
+              icon: "error",
+              confirmButtonColor: "#c88fd1",
+            });
+            return;
+          });
         Swal.fire({
+          // Borrado exitosamente
           title: "Borrado!",
           text: "El producto se ha eliminado!",
           icon: "success",
