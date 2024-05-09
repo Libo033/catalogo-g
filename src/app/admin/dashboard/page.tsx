@@ -72,7 +72,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="pt-20 w-full mx-auto max-w-screen-2xl">
+    <div className="pt-20 w-full mx-auto max-w-screen-2xl min-h-screen">
       <div className="px-4 pt-4">
         <Link
           className="text-[#007acc] text-lg underline"
@@ -103,17 +103,20 @@ const Dashboard = () => {
         />
       </div>
       <section className="p-4 mb-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {productos && productos.length > 0 ? (
-          productos.map((producto) => (
-            <AdminCard
-              producto={producto}
-              handleDeleteProduct={handleDeleteProduct}
-              key={producto._id}
-            />
-          ))
+        {productos ? (
+          productos.length > 0 ? (
+            productos.map((producto) => (
+              <AdminCard
+                producto={producto}
+                handleDeleteProduct={handleDeleteProduct}
+                key={producto._id}
+              />
+            ))
+          ) : (
+            <p className="h-80 flex justify-center items-center text-lg text-slate-600">No tenes productos cargados.</p>
+          )
         ) : (
           <>
-            {" "}
             <Skeleton
               width={"100%"}
               sx={{ height: "456px", transform: "scale(1,1)" }}
