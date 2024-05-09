@@ -112,7 +112,21 @@ const Dashboard = () => {
             />
           ))
         ) : (
-          <Skeleton width={"100%"} height={"382px"} />
+          <>
+            {" "}
+            <Skeleton
+              width={"100%"}
+              sx={{ height: "456px", transform: "scale(1,1)" }}
+            />
+            <Skeleton
+              width={"100%"}
+              sx={{ height: "456px", transform: "scale(1,1)" }}
+            />
+            <Skeleton
+              width={"100%"}
+              sx={{ height: "456px", transform: "scale(1,1)" }}
+            />
+          </>
         )}
       </section>
     </div>
