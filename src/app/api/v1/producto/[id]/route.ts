@@ -1,3 +1,4 @@
+import cloudinary from "@/Libs/database/cloudinarydb";
 import clientPromise from "@/Libs/database/mongodb";
 import { IProducto } from "@/Libs/interfaces";
 import {
@@ -73,6 +74,26 @@ export async function DELETE(
   try {
     const client: MongoClient = await clientPromise;
     const db: Db = client.db("catalogo-gri");
+
+    const producto = await db
+      .collection("productos")
+      .findOne({ _id: new ObjectId(params.id) });
+
+    if (producto) {
+      const public_id: string = producto.imagen.slice(
+        producto.imagen.indexOf("07-catalogo-gri/") + "07-catalogo-gri/".length,
+        producto.imagen.length - 4
+      );
+
+      await cloudinary.uploader.destroy("07-catalogo-gri/" + public_id, {
+        resource_type: "image",
+      });
+    } else {
+      return Response.json(
+        { Error: new Error("No se pudo eliminar la imagen"), code: 500 },
+        { status: 500 }
+      );
+    }
 
     const producto_borrado: DeleteResult = await db
       .collection("productos")
