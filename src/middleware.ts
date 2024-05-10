@@ -8,8 +8,14 @@ export async function middleware(request: NextRequest) {
     const mySession: RequestCookie | undefined =
       request.cookies.get("mySession");
 
-    if (request.cookies.has("mySession")) {
-      return NextResponse.next();
+    if (mySession) {
+      const secret = new TextEncoder().encode(
+        process.env.NEXT_PUBLIC_JWT_SECRET
+      );
+      const value = await jwtVerify(mySession?.value, secret);
+
+      if (value.payload.user_id === process.env.NEXT_PUBLIC_USER)
+        return NextResponse.next();
     }
 
     return NextResponse.redirect(new URL("/", request.url));

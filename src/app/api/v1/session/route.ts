@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   try {
     const secret_key: string | undefined = process.env.JWT_SECRET;
     const mySession: RequestCookie | undefined = cookies().get("mySession");
-    const user = process.env.USER;
+    const user = process.env.NEXT_PUBLIC_USER;
 
     if (!secret_key || !user) {
       return Response.json(
@@ -33,7 +33,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const secret_key: string | undefined = process.env.JWT_SECRET;
-    const user = process.env.USER;
+    const user = process.env.NEXT_PUBLIC_USER;
     const pass = process.env.PASS;
     const data: { email: string; password: string } = await req.json();
 
