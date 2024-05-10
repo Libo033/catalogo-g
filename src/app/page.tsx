@@ -1,5 +1,4 @@
 "use client";
-import AdminCard from "@/components/card/AdminCard";
 import ProductCard from "@/components/card/ProductCard";
 import { IProducto } from "@/Libs/interfaces";
 import { InputAdornment, Skeleton, TextField } from "@mui/material";

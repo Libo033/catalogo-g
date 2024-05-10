@@ -9,7 +9,7 @@ export async function GET(req: Request) {
     const mySession: RequestCookie | undefined = cookies().get("mySession");
     const user = process.env.USER;
 
-    if (!secret_key || !mySession || !user) {
+    if (!secret_key || !user) {
       return Response.json(
         { Error: "credentials error", code: 500 },
         { status: 500 }
