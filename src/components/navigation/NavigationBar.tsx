@@ -37,12 +37,14 @@ const NavigationBar = () => {
               </li>
               {admin && (
                 <li className="absolute right-6 md:right-10 lg:right-16">
-                  <Image
-                    src={"/img/menu.svg"}
-                    alt="admin"
-                    width={33}
-                    height={33}
-                  />
+                  <Link href={"/admin/dashboard"}>
+                    <Image
+                      src={"/img/menu.svg"}
+                      alt="admin"
+                      width={33}
+                      height={33}
+                    />
+                  </Link>
                 </li>
               )}
             </ul>
