@@ -17,8 +17,8 @@ export async function GET(req: Request) {
     }
 
     if (mySession !== undefined) {
-      let secret_key: Uint8Array = new TextEncoder().encode("valentin");
-      const value = await jwtVerify(mySession.value, secret_key);
+      let key: Uint8Array = new TextEncoder().encode(secret_key);
+      const value = await jwtVerify(mySession.value, key);
 
       if (value.payload.user_id === user)
         return Response.json({ admin: true, code: 200 }, { status: 200 });
