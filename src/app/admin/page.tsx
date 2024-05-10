@@ -1,10 +1,16 @@
 "use client";
-import LoginForm from "@/components/login/LoginForm";
+import LoginForm from "@/components/form/LoginForm";
 import { IErrorLogin } from "@/Libs/interfaces";
 import { Alert } from "@mui/material";
+import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 
+interface ApiResponse {
+  code: number;
+}
+
 const Admin = () => {
+  const router = useRouter();
   const [error, setError] = useState<IErrorLogin>({
     email: false,
     pass: false,
@@ -15,15 +21,30 @@ const Admin = () => {
     setError({ email: false, pass: false, info: "" });
   };
 
-  const handleLogin = async (Event: FormEvent) => {
+  const handleLogin = async (
+    Event: FormEvent,
+    email: string,
+    password: string
+  ) => {
     Event.preventDefault();
 
-    if (true) {
-      setError({
-        email: true,
-        pass: true,
-        info: "Email y/o contraseña incorrecto!",
-      });
+    const res: Response = await fetch("/api/v1/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+
+    if (data.code === 200) {
+      router.push("/admin/dashboard");
+    } else {
+      if (true) {
+        setError({
+          email: true,
+          pass: true,
+          info: "Email y/o contraseña incorrecto!",
+        });
+      }
     }
   };
 
