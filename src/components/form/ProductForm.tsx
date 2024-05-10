@@ -69,6 +69,7 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
   };
 
   useEffect(() => {
+    // Si hay ID entonces carga la informacion para editar
     if (id) {
       fetch(`/api/v1/producto/${id}`, { method: "GET" })
         .then((res: Response) => res.json())
@@ -77,13 +78,7 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
             setProduct(data.producto);
             setUploadData({ secure_url: data.producto.imagen });
           } else {
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Algo salió mal!",
-            }).then((result) => {
-              if (result.isConfirmed) router.push("/admin/dashboard");
-            });
+            throw new Error("No se pudo cargar el producto");
           }
         })
         .catch((error) => {
@@ -91,6 +86,8 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
             icon: "error",
             title: "Oops...",
             text: "Algo salió mal!",
+          }).then((result) => {
+            if (result.isConfirmed) router.push("/admin/dashboard");
           });
         });
     }

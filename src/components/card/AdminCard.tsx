@@ -5,13 +5,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const EditIcon = () => {
-  return <Image src={"/img/edit.svg"} alt="edit" width={18} height={18} />;
-};
-
-const TrashIcon = () => {
-  return <Image src={"/img/trash.svg"} alt="edit" width={18} height={18} />;
-};
+const EditIcon = () => (
+  <Image src={"/img/edit.svg"} alt="edit" width={18} height={18} />
+);
+const TrashIcon = () => (
+  <Image src={"/img/trash.svg"} alt="edit" width={18} height={18} />
+);
 
 const AdminCard = ({
   producto,
