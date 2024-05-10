@@ -31,11 +31,10 @@ const UploadImage = ({
   const [loading, setLoading] = useState(false); // Para boton de agregar imagen
 
   const handleAddImage = () => {
-    setLoading(true);
-    if (product.imagen) handleAdd(product.imagen, setUploadData);
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
+    if (product.imagen) {
+      setLoading(true);
+      handleAdd(product.imagen, setUploadData);
+    }
   };
 
   const handleDeleteImage = async () => {
@@ -57,6 +56,7 @@ const UploadImage = ({
       });
     } else if (uploadData) {
       setProduct((prod) => ({ ...prod, imagen: uploadData.secure_url }));
+      setLoading(false);
     }
   }, [uploadData]);
 
