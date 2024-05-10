@@ -14,6 +14,7 @@ interface ApiResponse {
 
 const Dashboard = () => {
   const [productos, setProductos] = useState<IProducto[]>();
+  const [search, setSearch] = useState<string>("");
 
   const handleDeleteProduct = (id: string) => {
     Swal.fire({
@@ -86,6 +87,10 @@ const Dashboard = () => {
           className="w-full sm:w-80"
           autoComplete="off"
           placeholder="Buscar productos"
+          value={search}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearch(e.target.value)
+          }
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -105,11 +110,19 @@ const Dashboard = () => {
       <section className="p-4 mb-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {productos ? (
           productos.length > 0 ? (
-            productos.map((producto) => (
+            productos.map((prod) => (
               <AdminCard
-                producto={producto}
+                show={
+                  search === ""
+                    ? true
+                    : prod.detalle
+                        .toLowerCase()
+                        .includes(search.toLowerCase()) ||
+                      prod.marca.toLowerCase().includes(search.toLowerCase())
+                }
+                producto={prod}
                 handleDeleteProduct={handleDeleteProduct}
-                key={producto._id}
+                key={prod._id}
               />
             ))
           ) : (
