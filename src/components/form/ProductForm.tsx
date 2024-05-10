@@ -1,17 +1,33 @@
 "use client";
 import { UploadApiResponse } from "cloudinary";
 import { FormControlLabel, Switch, TextField } from "@mui/material";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import PinkButton from "../varios/PinkButton";
 import { IProducto } from "@/Libs/interfaces";
 import { useRouter } from "next/navigation";
 import UploadImage from "../varios/UploadImage";
+import Swal from "sweetalert2";
+
+interface ApiResponseGet {
+  code: number;
+  producto: IProducto;
+}
+
+interface ApiResponsePost {
+  code: number;
+  nuevo: boolean;
+}
+
+interface ApiResponsePut {
+  code: number;
+  modificado: boolean;
+}
 
 const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
   const router = useRouter();
   const [uploadData, setUploadData] = useState<
     // Response del cloudinary
-    UploadApiResponse | Error | undefined
+    Partial<UploadApiResponse> | Error | undefined
   >();
   const [product, setProduct] = useState<Partial<IProducto>>({
     categoria: "",
@@ -27,21 +43,65 @@ const ProductForm = ({ id }: Readonly<{ id: string | null }>) => {
   const handleNuevoProducto = async (event: FormEvent) => {
     event.preventDefault();
 
-    const productoCreado = await fetch("/api/v1/producto", {
+    const res: Response = await fetch("/api/v1/producto", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(product),
     });
 
-    if (productoCreado.ok) {
-      router.push("/admin/dashboard");
-    }
+    const productoCreado: ApiResponsePost = await res.json();
+
+    if (productoCreado.code === 201) router.push("/admin/dashboard");
   };
+
+  const handleEditarProducto = async (event: FormEvent) => {
+    event.preventDefault();
+
+    const res: Response = await fetch(`/api/v1/producto/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(product),
+    });
+
+    const productoEditado: ApiResponsePut = await res.json();
+
+    if (productoEditado.code === 200) router.push("/admin/dashboard");
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetch(`/api/v1/producto/${id}`, { method: "GET" })
+        .then((res: Response) => res.json())
+        .then((data: ApiResponseGet) => {
+          if (data.code === 200) {
+            setProduct(data.producto);
+            setUploadData({ secure_url: data.producto.imagen });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Algo salió mal!",
+            }).then((result) => {
+              if (result.isConfirmed) router.push("/admin/dashboard");
+            });
+          }
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Algo salió mal!",
+          });
+        });
+    }
+  }, [id]);
 
   return (
     <form
       className="px-4 mt-4 mb-10 md:px-16 lg:px-40"
-      onSubmit={(Event: FormEvent) => handleNuevoProducto(Event)}
+      onSubmit={(Event: FormEvent) =>
+        id ? handleEditarProducto(Event) : handleNuevoProducto(Event)
+      }
     >
       <p className="text-xl font-medium pb-3">
         {!id ? "Nuevo Producto" : "Editar Producto"}

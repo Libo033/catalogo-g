@@ -16,9 +16,9 @@ let buttonClass =
 interface UploadImageProps {
   product: Partial<IProducto>;
   setProduct: React.Dispatch<React.SetStateAction<Partial<IProducto>>>;
-  uploadData: UploadApiResponse | Error | undefined;
+  uploadData: Partial<UploadApiResponse> | Error | undefined;
   setUploadData: React.Dispatch<
-    React.SetStateAction<UploadApiResponse | Error | undefined>
+    React.SetStateAction<Partial<UploadApiResponse> | Error | undefined>
   >;
 }
 
@@ -40,7 +40,7 @@ const UploadImage = ({
 
   const handleDeleteImage = async () => {
     if (uploadData && !(uploadData instanceof Error)) {
-      handleDelete(uploadData.secure_url, "07-catalogo-gri/");
+      handleDelete(uploadData.secure_url || "", "07-catalogo-gri/");
       setProduct((prod) => ({ ...prod, imagen: "" }));
       setUploadData(undefined);
     }
@@ -98,22 +98,24 @@ const UploadImage = ({
         </PinkButton>
       </div>
       {uploadData && !(uploadData instanceof Error) && (
-        <div className="max-h-[382px] relative">
-          <Image
-            className="border-2 rounded-xl flex max-h-[382px] object-contain"
-            src={uploadData.secure_url}
-            alt=""
-            width={480}
-            height={480}
-          />
-          <Image
-            onClick={handleDeleteImage}
-            className="absolute top-4 right-4"
-            src={"/img/close.svg"}
-            alt="close"
-            width={24}
-            height={24}
-          />
+        <div className="max-h-[382px] flex justify-center items-center">
+          <div className="relative">
+            <Image
+              className="border-2 rounded-xl flex max-h-[382px] object-contain"
+              src={uploadData.secure_url || ""}
+              alt={product.detalle ? product.detalle : ""}
+              width={480}
+              height={480}
+            />
+            <Image
+              onClick={handleDeleteImage}
+              className="absolute top-4 right-4"
+              src={"/img/close.svg"}
+              alt="close"
+              width={24}
+              height={24}
+            />
+          </div>
         </div>
       )}
     </div>
