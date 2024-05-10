@@ -30,7 +30,7 @@ const AdminCard = ({
     <article className="w-full h-fit border-2 rounded-xl p-2">
       <div className="relative flex justify-center border rounded-lg h-72">
         <Image
-          className="object-contain"
+          className="object-cover object-center rounded-lg"
           src={producto.imagen}
           alt={producto.detalle}
           width={480}
