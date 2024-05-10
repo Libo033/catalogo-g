@@ -1,4 +1,5 @@
 "use client";
+import AdminCard from "@/components/card/AdminCard";
 import ProductCard from "@/components/card/ProductCard";
 import { IProducto } from "@/Libs/interfaces";
 import { Skeleton } from "@mui/material";
@@ -25,14 +26,16 @@ export default function Home() {
   }, []);
 
   return (
-    <main>
+    <main className="pt-20 w-full mx-auto max-w-screen-2xl min-h-screen">
       <section className="p-4 mb-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {productos ? (
           productos.length > 0 ? (
-            productos.map((prod) => <p></p>)
+            productos.map((prod) => (
+              <ProductCard key={prod._id} producto={prod} show={true} />
+            ))
           ) : (
             <p className="h-80 flex justify-center items-center text-lg text-slate-600">
-              <ProductCard />
+              No tenes productos cargados.
             </p>
           )
         ) : (
