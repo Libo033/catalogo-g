@@ -11,6 +11,7 @@ interface ApiResponse {
 }
 
 export default function Home() {
+  const [filter, setFilter] = useState<boolean>(false);
   const [productos, setProductos] = useState<IProducto[]>();
   const [search, setSearch] = useState<string>("");
 
@@ -26,7 +27,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="pt-20 w-full mx-auto max-w-screen-2xl min-h-screen">
+    <main className="relative pt-20 w-full mx-auto max-w-screen-2xl min-h-screen">
       <div className="p-4">
         <TextField
           className="w-full sm:w-80"
@@ -91,6 +92,40 @@ export default function Home() {
           </>
         )}
       </section>
+      <div className="relative">
+        <div
+          className={`w-screen ease-in-out duration-300 z-30 fixed flex gap-0 justify-center items-center top-[50%] left-[50%] translate-y-[-50%] lg:hidden ${
+            filter ? "translate-x-[-50%]" : "translate-x-[-142%]"
+          }`}
+        >
+          <div className="w-10/12 h-96 rounded-lg border bg-white p-4 shadow-xl z-30">
+            <div className="flex justify-between border-b">
+              <p className="text-3xl font-medium">Filtros</p>
+              <Image
+                className="mx-2 cursor-pointer"
+                onClick={() => setFilter(false)}
+                src={"/img/close.svg"}
+                alt="close"
+                width={18}
+                height={18}
+              />
+            </div>
+          </div>
+          <div
+            onClick={() => setFilter(!filter)}
+            className="w-fit h-full bg-transparent rotate-90 z-20 cursor-pointer"
+          >
+            <p className="bg-[#ff6bb5] fixed bottom-0 right-0 translate-x-[47px] z-50 text-white font-semibold uppercase px-4 rounded-t-lg">
+              filtros
+            </p>
+          </div>
+        </div>
+      </div>
+      {filter && (
+        <span
+          className={`lg:hidden fixed opacity-70 ease-in-out duration-300 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-black h-screen w-screen z-20`}
+        ></span>
+      )}
     </main>
   );
 }
