@@ -3,6 +3,7 @@ import { Outfit } from "next/font/google";
 import "./globals.css";
 import NavigationBar from "@/components/navigation/NavigationBar";
 import { Analytics } from "@vercel/analytics/next";
+import { ProductContextProvider } from "@/context/ProductContext";
 
 const outfit = Outfit({ subsets: ["latin"] });
 
@@ -20,8 +21,10 @@ export default function RootLayout({
     <html lang="es">
       <Analytics mode="production" />
       <body className={outfit.className}>
-        <NavigationBar />
-        {children}
+        <ProductContextProvider>
+          <NavigationBar />
+          {children}
+        </ProductContextProvider>
       </body>
     </html>
   );
