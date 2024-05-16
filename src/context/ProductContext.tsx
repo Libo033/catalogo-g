@@ -1,3 +1,4 @@
+"use client";
 import { GETResponse, IProducto, IProductsContext } from "@/Libs/interfaces";
 import { createContext, useState, useEffect } from "react";
 
